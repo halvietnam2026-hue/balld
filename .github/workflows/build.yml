@@ -1,0 +1,43 @@
+name: Build Project
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Install dependencies
+        run: |
+          if [ -d "ball-sort-puzzle-development" ]; then
+            cd ball-sort-puzzle-development && npm install
+          else
+            npm install
+          fi
+
+      - name: Build project
+        run: |
+          if [ -d "ball-sort-puzzle-development" ]; then
+            cd ball-sort-puzzle-development && npm run build
+          else
+            npm run build
+          fi
+
+      - name: Upload Build Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: dist-build
+          path: |
+            dist/
+            ball-sort-puzzle-development/dist/
